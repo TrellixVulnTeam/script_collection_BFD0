@@ -3,7 +3,7 @@
 Created on Fri Sep 24 13:34:57 2021
 @author: Ben Mulcahy
 
-Takes tiff stack and converts to serial images.
+Takes tiff stack and converts to sequence of individual images.
 Made to process liver montage stacks from the SBF-SEM
 """
 
@@ -25,11 +25,10 @@ for stack in os.listdir(in_dir):
         for tile in im:
             tile_clahe = exposure.equalize_adapthist(tile, clip_limit=0.03) # perform clahe
             tile_int = util.img_as_uint(tile_clahe) # have to convert from float64 array to int array
-            tilename = stack[:-4] # crop '.tif' from the end
+            stack_name = stack[:-4] # crop '.tif' from the end to get the stack name
             
-            # save with numberpadded tile number
-            saveName = outdir + tilename + '_' + str(tile_index).zfill(2) + '.tif'
-            io.imsave(saveName, tile_int)
+            saveName = outdir + stack_name + '_' + str(tile_index).zfill(2) + '.tif' # add numberpadded indices to give tile name
+            io.imsave(saveName, tile_int) # save to outdir
             tile_index += 1
         print('Finished converting: \'' + stack + '\'')
         
